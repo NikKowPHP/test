@@ -1,0 +1,58 @@
+{
+    "version": 2,
+    "outputDirectory": "public",
+    "functions": {
+        "api/index.php": { "runtime": "vercel-php@0.7.1" }
+    },
+    "routes": [
+        {
+            "src": "/build/(.*)",
+            "dest": "/build/$1"
+        },
+        {
+            "src": "/resources/(.*)",
+            "dest": "/resources/$1"
+        },
+        {
+            "src": "/assets/(.*)",
+            "dest": "/assets/$1"
+        },
+        {
+            "src": "/favicon(.*)",
+            "dest": "/favicon.ico"
+        },
+        {
+            "src": "/vendor/livewire/(.*)",
+            "dest": "/vendor/livewire/$1"
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/index.php"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "env": {
+        "IS_VERCEL": "true",
+        "APP_STORAGE_PATH": "/tmp/storage",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie",
+        "VIEW_COMPILED_PATH": "/tmp/views",
+        "CACHE_STORE": "array",
+
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp",
+
+        "VITE_MANIFEST_PATH": "manifest.json",
+        "APP_URL": "https://www.ziro.fit",
+        "APP_KEY": "base64:+fEy1zsPEr1npr0hDU5UlewJDFsUZWE3JcPTRn2ETKg=",
+        "VITE_BUILD_PATH": ""
+    }
+}
+
