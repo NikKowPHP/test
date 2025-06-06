@@ -69,9 +69,52 @@ $port = (int)getenv('PORT') ?: 2387;     // Fallback to 8080 if not set
 
 $connection = new Connection($ip, $port);
 
-// Attempt to log in with dummy data
+// Check if the request method is POST for the API endpoint
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Set content type to JSON
+    header('Content-Type: application/json');
+
+    // Get parameters from the POST request
+    $login = $_POST['login'] ?? null;
+    $password = $_POST['password'] ?? null;
+    $deviceId = $_POST['device_id'] ?? null;
+    $orderId = $_POST['order_id'] ?? null;
+    $postIp = $_POST['ip_address'] ?? null; // New: Get IP from POST
+    $postPort = $_POST['port'] ?? null;     // New: Get Port from POST
+
+    // Validate required parameters
+    if ($login === null || $password === null || $deviceId === null || $orderId === null) {
+        http_response_code(400); // Bad Request
+        echo json_encode(['status' => 'error', 'message' => 'Missing required parameters (login, password, device_id, order_id).']);
+        exit;
+    }
+
+    // Use POSTed IP and Port if available, otherwise use environment variables
+    $currentIp = $postIp ?? $ip;
+    $currentPort = (int)($postPort ?? $port);
+
+    // Create a new connection with potentially overridden IP and Port
+    $dynamicConnection = new Connection($currentIp, $currentPort);
+
+    // Attempt to log in
+    $loggedIn = $dynamicConnection->login($login, $password, (int)$deviceId, $orderId);
+
+    if ($loggedIn) {
+        http_response_code(200); // OK
+        echo json_encode(['status' => 'success', 'message' => 'Login successful!']);
+    } else {
+        http_response_code(401); // Unauthorized
+        echo json_encode(['status' => 'error', 'message' => 'Login failed.']);
+    }
+    exit; // Stop further execution for API requests
+}
+
+// The following code is for direct script execution (e.g., via `php index.php`)
+// and can be removed if this file is solely for the API endpoint.
+// For now, it's kept for demonstration/testing purposes.
+
+// Attempt to log in with dummy data for direct execution
 $loggedIn = $connection->login('test_user', 'test_password', 123, 'ORDER_ABC');
-echo "$loggedIn";
 
 if ($loggedIn) {
     echo "Login successful!\n";
@@ -86,7 +129,7 @@ if ($loggedIn) {
 // 4. Run the command: php index.php
 //
 // Note: The `send` method attempts to open a socket connection.
-// For this example to fully work, you would need a server running at '127.0.0.1:8080'
+// For this example to fully work, you would need a server running at '172.16.2.51:2387'
 // that can handle the "LOGIN" payload and return a "LOGIN_ID".
 // Without a server, the `fsockopen` will fail, and you will see "Login failed."
 
