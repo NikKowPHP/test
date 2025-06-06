@@ -4,6 +4,17 @@ FROM php:8.2-apache
 # Set the working directory inside the container
 WORKDIR /var/www/html
 
+# Install system dependencies required for Composer and PHP extensions
+RUN apt-get update && \
+	apt-get install -y \
+	git \
+	unzip \
+	libzip-dev \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Install PHP zip extension
+RUN docker-php-ext-install zip
+
 # Install Composer dependencies
 # Copy composer.json and composer.lock first to leverage Docker cache
 COPY composer.json composer.lock ./
