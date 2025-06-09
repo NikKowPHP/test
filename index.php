@@ -39,7 +39,7 @@ class Connection
         return json_decode($response, true);
     }
 
-    public function login(string $login, string $password, int $device_id, string $order_id): bool
+    public function login(string $login, string $password, int $device_id, string $order_id): ?array
     {
         $response = $this->send([
             "METHOD" => "LOGIN",
@@ -55,12 +55,12 @@ class Connection
             error_log("Try to login");
             $this->login_id = $response['LOGIN_ID'];
             error_log("Login successful: " . json_encode($response));
-            return true;
+            return $response; // Return the full response array on success
         }
 
         error_log("Login failed: " . json_encode($response));
 
-        return false;
+        return $response; // Return the full response array on failure (or null if send failed)
     }
 }
 
