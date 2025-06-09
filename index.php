@@ -101,10 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($loggedIn) {
         http_response_code(200); // OK
-        echo json_encode(['status' => 'success', 'message' => 'Login successful!']);
+        echo json_encode($loggedIn);
     } else {
-        http_response_code(401); // Unauthorized
-        echo json_encode(['status' => 'error', 'message' => 'Login failed.']);
+        http_response_code(200); // Unauthorized
+        echo json_encode($loggedIn);
     }
     exit; // Stop further execution for API requests
 }
